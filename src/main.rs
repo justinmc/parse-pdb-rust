@@ -21,9 +21,43 @@ fn main() {
   }
 }
 
+struct Atom {
+  serial: i32,
+  name: String,
+  alt_loc: String,
+  res_name: String,
+  chain_id: String,
+  res_seq: i32,
+  i_code: String,
+  x: f64,
+  y: f64,
+  z: f64,
+  occupancy: f64,
+  temp_factor: f64,
+  element: String,
+  charge: String,
+}
+
 fn parse_line(line: String) {
   if &line[0..6] == ATOM_NAME {
-    println!("atom! name: {}", &line[12..16].trim());
+    // TODO error handling if data is bad?
+    let atom = Atom {
+      serial: line[6..11].trim().parse::<i32>().unwrap(),
+      name: line[12..16].trim().to_string(),
+      alt_loc: line[16..17].trim().to_string(),
+      res_name: line[17..20].trim().to_string(),
+      chain_id: line[21..22].trim().to_string(),
+      res_seq: line[22..26].trim().parse::<i32>().unwrap(),
+      i_code: line[26..27].trim().to_string(),
+      x: line[30..38].trim().parse::<f64>().unwrap(),
+      y: line[38..46].trim().parse::<f64>().unwrap(),
+      z: line[46..54].trim().parse::<f64>().unwrap(),
+      occupancy: line[54..60].trim().parse::<f64>().unwrap(),
+      temp_factor: line[60..66].trim().parse::<f64>().unwrap(),
+      element: line[76..78].trim().to_string(),
+      charge: line[78..80].trim().to_string(),
+    };
+    println!("atom! {}, {}", atom.serial, atom.name);
   }
 }
 
