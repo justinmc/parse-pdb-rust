@@ -1,3 +1,5 @@
+mod atom;
+
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -21,49 +23,10 @@ fn main() {
     }
 }
 
-struct Atom {
-    serial: i32,
-    name: String,
-    alt_loc: String,
-    res_name: String,
-    chain_id: String,
-    res_seq: i32,
-    i_code: String,
-    x: f64,
-    y: f64,
-    z: f64,
-    occupancy: f64,
-    temp_factor: f64,
-    element: String,
-    charge: String,
-}
-
-impl Atom {
-    fn to_string(&self) -> String {
-        return format!(
-            "Atom: {name}, {serial}, {alt_loc}, {res_name}, {chain_id}, {res_seq}, {i_code}, {x}, {y}, {z}, {occupancy}, {temp_factor}, {element}, {charge}",
-            name = self.name,
-            serial = self.serial,
-            alt_loc = self.alt_loc,
-            res_name = self.res_name,
-            chain_id = self.chain_id,
-            res_seq = self.res_seq,
-            i_code = self.i_code,
-            x = self.x,
-            y = self.y,
-            z = self.z,
-            occupancy = self.occupancy,
-            temp_factor = self.temp_factor,
-            element = self.element,
-            charge = self.charge,
-        );
-    }
-}
-
 fn parse_line(line: String) {
     if &line[0..6] == ATOM_NAME {
         // TODO error handling if data is bad?
-        let atom = Atom {
+        let atom = atom::Atom {
             serial: line[6..11].trim().parse::<i32>().unwrap(),
             name: line[12..16].trim().to_string(),
             alt_loc: line[16..17].trim().to_string(),
