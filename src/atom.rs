@@ -16,7 +16,7 @@ pub struct Atom {
 }
 
 impl Atom {
-    pub fn new(pdb_line: String) -> Atom {
+    pub fn from_string(pdb_line: String) -> Atom {
         return Atom {
             serial: pdb_line[6..11].trim().parse::<i32>().unwrap(),
             name: pdb_line[12..16].trim().to_string(),

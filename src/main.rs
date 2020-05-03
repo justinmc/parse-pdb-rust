@@ -8,35 +8,61 @@ use std::path::Path;
 fn main() {
     let filename: &'static str = "./dat/3aid.pdb";
 
-    if let Ok(lines) = read_lines(filename) {
-        for line in lines {
-            if let Ok(ip) = line {
-                parse_line(ip);
-            }
-        }
-    }
+    let molecule: Molecule = Molecule::from_file(filename);
+    println!("{}", molecule.to_string());
 }
 
-fn parse_line(line: String) {
-    let identifier = &line[0..6];
+// TODO Move to its own file, but I was having module directory problems...
+pub struct Molecule {
+    pub atoms: Vec<atom::Atom>,
+    pub filename: String,
+    pub residues: Vec<residue::Residue>,
+}
 
-    // TODO save atoms, res, chains in data structure and output stats or something.
-    match identifier {
-        "ATOM  " => {
-            // TODO error handling if data is bad?
-            let atom = atom::Atom::new(line);
-            println!("{}", atom.to_string());
-        }
-        "SEQRES" => {
-            let residues: Vec<residue::Residue> = residue::Residue::parse_seq_res_entry(line);
-            for residue in residues {
-                println!("{}", residue.to_string());
+impl Molecule {
+    pub fn from_file(filename: &str) -> Molecule {
+        let mut atoms: Vec<atom::Atom> = Vec::new();
+        let mut residues: Vec<residue::Residue> = Vec::new();
+
+        if let Ok(lines) = read_lines(filename) {
+            for line in lines {
+                if let Ok(ip) = line {
+                    let identifier = &ip[0..6];
+
+                    match identifier {
+                        "ATOM  " => {
+                            // TODO error handling if data is bad?
+                            atoms.push(atom::Atom::from_string(ip));
+                        }
+                        "SEQRES" => {
+                            let new_residues: Vec<residue::Residue> =
+                                residue::Residue::parse_seq_res_entry(ip);
+                            for residue in new_residues {
+                                residues.push(residue);
+                            }
+                            // TODO add to chains.
+                        }
+                        _ => {
+                            // These lines are not relevant with the current functionality.
+                        }
+                    }
+                }
             }
-            // TODO add to chains.
         }
-        _ => {
-            // These lines are not relevant with the current functionality.
-        }
+        return Molecule {
+            atoms,
+            filename: filename.to_string(),
+            residues,
+        };
+    }
+
+    pub fn to_string(&self) -> String {
+        return format!(
+            "Molecule {filename} with {num_atoms} atoms and {num_residues} residues",
+            filename = self.filename,
+            num_atoms = self.atoms.len(),
+            num_residues = self.residues.len(),
+        );
     }
 }
 
