@@ -15,10 +15,10 @@ impl Residue {
         let mut residues: Vec<Residue> = Vec::new();
         for res_name in Residue::parse_res_names(res_names_string) {
             residues.push(Residue {
-                ser_num: ser_num,
+                ser_num,
                 chain_id: chain_id.clone(),
-                num_res: num_res,
-                res_name: res_name,
+                num_res,
+                res_name,
             });
         }
 
