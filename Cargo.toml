@@ -3,7 +3,6 @@ name = "parse-pdb"
 version = "0.1.0"
 authors = ["Justin McCandless <justinjmccandless@gmail.com>"]
 edition = "2018"
-license = "MIT"
 license-file = "LICENSE"
 description = "An example of parsing molecular data from a PDB file."
 repository = "https://github.com/justinmc/parse-pdb-rust"
